@@ -1,0 +1,21 @@
+{
+  "name": "uniswapv2-price-oracle",
+  "version": "1.0.0",
+  "description": "This project implements UNISWAP V2 price oracle",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "uniswap",
+    "price",
+    "oracle"
+  ],
+  "author": "developeruche",
+  "license": "MIT",
+  "dependencies": {
+    "@uniswap/v2-core": "^1.0.1",
+    "@uniswap/v2-periphery": "^1.1.0-beta.0",
+    "hardhat": "^2.12.4"
+  }
+}
