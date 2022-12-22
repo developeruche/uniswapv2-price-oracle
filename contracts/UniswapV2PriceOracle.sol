@@ -67,7 +67,15 @@ contract UniswapV2PriceOracle {
    }
 
    /// @notice this is the function the the user would call to know how token1 when providing token0
-   function consult(address _token, uint256 _amountIn) external view returns (uint256 amountOut_) {}
+   function consult(address _token, uint256 _amountIn) external view returns (uint256 amountOut_) {
+      require(token == token0 or token == token1, "invalid token");
+
+      if(token == token0) {
+         amountOut_ = price0Average.mul(_amountIn).decode144();
+      } else {
+         amountOut_ = price1Average.mul(_amountIn).decode144();
+      }
+   }
 
 
 
