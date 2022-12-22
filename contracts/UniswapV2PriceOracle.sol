@@ -29,8 +29,8 @@ contract UniswapV2PriceOracle {
     pair = _pair;
     token0 = _pair.token0();
     token1 = _pair.token1();
-    price0CummlativeLast = _pair.price0CummlativeLast();
-    price1CummlativeLast = _pair.price1CummlativeLast();
+    price0CummlativeLast = _pair.price0CumulativeLast();
+    price1CummlativeLast = _pair.price1CumulativeLast();
     (,, blockTimestampLast) = _pair.getReserves();
    }
 
@@ -39,27 +39,27 @@ contract UniswapV2PriceOracle {
    function update() external {
       (
          uint256 price0Cummlative,
-         uint256 price0Cummlative,
+         uint256 price1Cummlative,
          uint32 blockTimestamp // this is the last time this pair was interacted with
-      ) = UniswapV2Library.currentCummulativePrices(address(pair));
+      ) = UniswapV2OracleLibrary.currentCumulativePrices(address(pair));
       uint256 timeElasped = blockTimestamp - blockTimestampLast;
       require(timeElasped >= PERIOD, "not time");
 
       price0Average = FixedPoint.uq112x112(
-         unit224(
+         uint224(
             (
                price0Cummlative - price0CummlativeLast
             ) / timeElasped
          )
-      )
+      );
 
       price1Average = FixedPoint.uq112x112(
-         unit224(
+         uint224(
             (
                price1Cummlative - price1CummlativeLast
             ) / timeElasped
          )
-      )
+      );
       
       price0CummlativeLast = price0Cummlative;
       price1CummlativeLast = price1Cummlative;
@@ -68,9 +68,9 @@ contract UniswapV2PriceOracle {
 
    /// @notice this is the function the the user would call to know how token1 when providing token0
    function consult(address _token, uint256 _amountIn) external view returns (uint256 amountOut_) {
-      require(token == token0 or token == token1, "invalid token");
+      require(_token == token0 || _token == token1, "invalid token");
 
-      if(token == token0) {
+      if(_token == token0) {
          amountOut_ = price0Average.mul(_amountIn).decode144();
       } else {
          amountOut_ = price1Average.mul(_amountIn).decode144();
